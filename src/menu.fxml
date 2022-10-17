@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="279.0" prefWidth="246.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuController">
+   <children>
+      <VBox layoutX="14.0" layoutY="14.0" prefHeight="213.0" prefWidth="100.0">
+         <children>
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Kolumny:" />
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Wiersze:" />
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Connect N, N:" />
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Gracz 1:" />
+            <ToggleButton fx:id="gracz1ZawodnikButton" mnemonicParsing="false" onAction="#gracz1onActionButton" prefHeight="25.0" prefWidth="100.0" text="AI" />
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Poziom:" />
+            <TextField fx:id="gracz1TextField" disable="true" prefHeight="25.0" prefWidth="100.0" text="2" />
+            <ToggleButton fx:id="gracz1AlgorytmButton" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="MinMax" />
+         </children>
+      </VBox>
+      <VBox layoutX="135.0" layoutY="14.0" prefHeight="213.0" prefWidth="100.0">
+         <children>
+            <TextField fx:id="kolumnyTextField" promptText="7" text="7" />
+            <TextField fx:id="wierszeTextField" text="6" />
+            <TextField fx:id="connectNTextField" text="4" />
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Gracz 2:" />
+            <ToggleButton fx:id="gracz2ZawodnikButton" mnemonicParsing="false" onAction="#gracz2onActionButton" prefHeight="25.0" prefWidth="100.0" text="AI" />
+            <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Poziom:" />
+            <TextField fx:id="gracz2TextField" disable="true" prefHeight="25.0" prefWidth="100.0" text="2" />
+            <ToggleButton fx:id="gracz2AlgorytmButton" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="MinMax" />
+         </children>
+      </VBox>
+      <Button fx:id="startButton" layoutX="103.0" layoutY="239.0" mnemonicParsing="false" onAction="#onAction" text="Start" />
+   </children>
+</AnchorPane>
