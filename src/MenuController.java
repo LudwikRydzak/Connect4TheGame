@@ -19,10 +19,10 @@ import javafx.stage.Stage;
 
 public class MenuController {
 
-	Plansza plansza = null;
-	Zawodnik zawodnik1 = null;
-	Zawodnik zawodnik2 = null;
-	Zawodnik aktualnyGracz = zawodnik1;
+	Board board = null;
+	Player player1 = null;
+	Player player2 = null;
+	Player currentPlayer = player1;
 	Stage stage;
 	boolean koniec = false;
 	int liczbaRund;
@@ -54,7 +54,6 @@ public class MenuController {
 	ToggleButton gracz2AlgorytmButton;
 
 	public MenuController() {
-		System.out.println("Konstruktor domyslny!!!!!!!");
 	}
 
 	public void gracz1onActionButton(ActionEvent event) {
@@ -77,20 +76,20 @@ public class MenuController {
 		}
 	}
 
-	private Parent zrobScene(Plansza plansza) {
+	private Parent makeScene(Board board) {
 		Pane root = new Pane();
-		Shape gridShape = zrobPlansze(plansza);
+		Shape gridShape = createBoard(board);
 		root.getChildren().add(gridShape);
-		root.getChildren().addAll(rysujPlansze(plansza));
-		root.getChildren().addAll(wyborKolumny(plansza));
+		root.getChildren().addAll(rysujPlansze(board));
+		root.getChildren().addAll(wyborKolumny(board));
 		return root;
 
 	}
 
-	private Shape zrobPlansze(Plansza plansza) {
-		Shape shape = new Rectangle(plansza.kolumny * 50, plansza.wiersze * 50);
-		for (int i = 0; i < plansza.kolumny; i++) {
-			for (int j = 0; j < plansza.wiersze; j++) {
+	private Shape createBoard(Board board) {
+		Shape shape = new Rectangle(board.columns * 50, board.rows * 50);
+		for (int i = 0; i < board.columns; i++) {
+			for (int j = 0; j < board.rows; j++) {
 				Rectangle pole = new Rectangle(40, 40);
 				pole.setStroke(Color.BLACK);
 				pole.setTranslateX(i * 50 + 5);
@@ -102,10 +101,10 @@ public class MenuController {
 		return shape;
 	}
 
-	private List<Rectangle> wyborKolumny(Plansza plansza) {
+	private List<Rectangle> wyborKolumny(Board board) {
 		List<Rectangle> list = new ArrayList<>();
-		for (int i = 0; i < plansza.kolumny; i++) {
-			Rectangle pole = new Rectangle(50, plansza.wiersze * 50);
+		for (int i = 0; i < board.columns; i++) {
+			Rectangle pole = new Rectangle(50, board.rows * 50);
 			pole.setTranslateX(i * 50);
 			pole.setFill(Color.TRANSPARENT);
 
@@ -119,20 +118,20 @@ public class MenuController {
 		return list;
 	}
 
-	private List<Rectangle> rysujPlansze(Plansza plansza) {
+	private List<Rectangle> rysujPlansze(Board board) {
 		List<Rectangle> list = new ArrayList<>();
-		for (int i = 0; i < plansza.kolumny; i++) {
-			for (int j = 0; j < plansza.wiersze; j++) {
+		for (int i = 0; i < board.columns; i++) {
+			for (int j = 0; j < board.rows; j++) {
 				Rectangle pole = new Rectangle(40, 40);
 				pole.setTranslateX(i * 50 + 5);
-				pole.setTranslateY((plansza.wiersze - 1) * 50 - j * 50 + 5);
-				if (plansza.plansza[i][j] == 0) {
+				pole.setTranslateY((board.rows - 1) * 50 - j * 50 + 5);
+				if (board.board[i][j] == 0) {
 					pole.setFill(Color.TRANSPARENT);
 					pole.setStroke(Color.BLACK);
-				} else if (plansza.plansza[i][j] == 1) {
+				} else if (board.board[i][j] == 1) {
 					pole.setFill(Color.RED);
 					pole.setStroke(Color.BLACK);
-				} else if (plansza.plansza[i][j] == 2) {
+				} else if (board.board[i][j] == 2) {
 					pole.setFill(Color.YELLOW);
 					pole.setStroke(Color.BLACK);
 				}
@@ -145,29 +144,29 @@ public class MenuController {
 	}
 
 	EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
-		Ruch aktualnyRuch;
+		Move aktualnyMove;
 
 		@Override
 		public void handle(MouseEvent e) {
-			Ruch ruch = new Ruch((int) (e.getSceneX() / 50), aktualnyGracz.kolor);
-			if (plansza.czyMoznaZagrac(ruch.indeksKolumny)) {
+			Move move = new Move((int) (e.getSceneX() / 50), currentPlayer.colour);
+			if (board.ifMovePossible(move.columnIndex)) {
 
-				if (plansza.zrobRuch(ruch)) {
-					if (plansza.czyKoniec(ruch)) {
+				if (board.makeMove(move)) {
+					if (board.ifEnd(move)) {
 						koniec = true;
-						System.out.println("Wygra³ gracz " + aktualnyGracz.kolor);
+						System.out.println("Wygra³ gracz " + currentPlayer.colour);
 						Pane root = new Pane();
-						Shape gridShape = zrobPlansze(plansza);
+						Shape gridShape = createBoard(board);
 						root.getChildren().add(gridShape);
-						root.getChildren().addAll(rysujPlansze(plansza));
+						root.getChildren().addAll(rysujPlansze(board));
 						stage.setScene(new Scene(root));
 						stage.show();
 					}
 
-					if (aktualnyGracz == zawodnik1) {
-						aktualnyGracz = zawodnik2;
+					if (currentPlayer == player1) {
+						currentPlayer = player2;
 					} else {
-						aktualnyGracz = zawodnik1;
+						currentPlayer = player1;
 					}
 				} else {
 					System.out.println("Nie mozna bylo wykonac ruchu");
@@ -175,11 +174,11 @@ public class MenuController {
 			}
 			if (!koniec) {
 				if (!koniec) {
-					if (aktualnyGracz.czlowiek) {
-						rozgrywkaCzlowiek();
+					if (currentPlayer.ifHumanPlayer) {
+						gameplayHuman();
 					} else {
 						try {
-							rozgrywkaMaszyna();
+							gameplayAI();
 						} catch (InterruptedException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -192,82 +191,82 @@ public class MenuController {
 	};
 
 	public void onAction(ActionEvent event) throws IOException, InterruptedException {
-		plansza = new Plansza(Integer.parseInt(kolumnyTextField.getText()),
+		board = new Board(Integer.parseInt(kolumnyTextField.getText()),
 				Integer.parseInt(wierszeTextField.getText()), Integer.parseInt(connectNTextField.getText()));
 		if (!gracz1ZawodnikButton.isSelected()) {
-			zawodnik1 = new Czlowiek(1);
+			player1 = new HumanPlayer(1);
 		} else {
-			System.out.println("Podaj poziom AI");
+			System.out.println("Podaj strength AI");
 			int poziom = Integer.parseInt(gracz1TextField.getText());
-			zawodnik1 = new Maszyna(1, poziom);
+			player1 = new ComputerPlayer(1, poziom);
 		}
 		if (!gracz2ZawodnikButton.isSelected()) {
-			zawodnik2 = new Czlowiek(2);
+			player2 = new HumanPlayer(2);
 		} else {
 			int poziom = Integer.parseInt(gracz1TextField.getText());
-			zawodnik2 = new Maszyna(2, poziom);
+			player2 = new ComputerPlayer(2, poziom);
 		}
-		liczbaRund = plansza.kolumny * plansza.wiersze;
-		aktualnyGracz = zawodnik1;
+		liczbaRund = board.columns * board.rows;
+		currentPlayer = player1;
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-		if (aktualnyGracz.czlowiek) {
-			rozgrywkaCzlowiek();
+		if (currentPlayer.ifHumanPlayer) {
+			gameplayHuman();
 		} else {
-			rozgrywkaMaszyna();
+			gameplayAI();
 		}
 
 	}
 
-	public boolean rozgrywkaMaszyna() throws InterruptedException {
+	public boolean gameplayAI() throws InterruptedException {
 
 		Pane root = new Pane();
-		Shape gridShape = zrobPlansze(plansza);
+		Shape gridShape = createBoard(board);
 		root.getChildren().add(gridShape);
-		root.getChildren().addAll(rysujPlansze(plansza));
+		root.getChildren().addAll(rysujPlansze(board));
 
 		stage.setScene(new Scene(root));
 		stage.show();
 		Thread.sleep(1000);
 
-		Ruch ruch = aktualnyGracz.wykonajRuch(plansza);
-		if (plansza.czyMoznaZagrac(ruch.indeksKolumny)) {
+		Move move = currentPlayer.makeMove(board);
+		if (board.ifMovePossible(move.columnIndex)) {
 
-			if (plansza.zrobRuch(ruch)) {
-				if (plansza.czyKoniec(ruch)) {
+			if (board.makeMove(move)) {
+				if (board.ifEnd(move)) {
 
 					koniec = true;
-					System.out.println("Wygra³ gracz " + aktualnyGracz.kolor);
-					Pane rootKoniec = new Pane();
-					Shape gridShapeKoniec = zrobPlansze(plansza);
-					rootKoniec.getChildren().add(gridShapeKoniec);
-					rootKoniec.getChildren().addAll(rysujPlansze(plansza));
-					stage.setScene(new Scene(rootKoniec));
+					System.out.println("Wygra³ gracz " + currentPlayer.colour);
+					Pane rootEnd = new Pane();
+					Shape gridShapeKoniec = createBoard(board);
+					rootEnd.getChildren().add(gridShapeKoniec);
+					rootEnd.getChildren().addAll(rysujPlansze(board));
+					stage.setScene(new Scene(rootEnd));
 					// stage.show();
-				} else if (plansza.czyKoniecRuchow()) {
+				} else if (board.ifNoMoreMoves()) {
 					koniec = true;
 					System.out.println("REMIS!!!!!!!");
-					Pane rootKoniec = new Pane();
-					Shape gridShapeKoniec = zrobPlansze(plansza);
-					rootKoniec.getChildren().add(gridShapeKoniec);
-					rootKoniec.getChildren().addAll(rysujPlansze(plansza));
-					stage.setScene(new Scene(rootKoniec));
+					Pane rootEnd = new Pane();
+					Shape gridShapeKoniec = createBoard(board);
+					rootEnd.getChildren().add(gridShapeKoniec);
+					rootEnd.getChildren().addAll(rysujPlansze(board));
+					stage.setScene(new Scene(rootEnd));
 				}
 
-				if (aktualnyGracz == zawodnik1) {
-					aktualnyGracz = zawodnik2;
+				if (currentPlayer == player1) {
+					currentPlayer = player2;
 				} else {
-					aktualnyGracz = zawodnik1;
+					currentPlayer = player1;
 				}
 			} else {
 				System.out.println("Nie mozna bylo wykonac ruchu");
 			}
 		}
 		if (!koniec) {
-			if (aktualnyGracz.czlowiek) {
-				rozgrywkaCzlowiek();
+			if (currentPlayer.ifHumanPlayer) {
+				gameplayHuman();
 			} else {
-				rozgrywkaMaszyna();
+				gameplayAI();
 			}
 
 		}
@@ -275,8 +274,8 @@ public class MenuController {
 
 	}
 
-	public boolean rozgrywkaCzlowiek() {
-		stage.setScene(new Scene(zrobScene(plansza)));
+	public boolean gameplayHuman() {
+		stage.setScene(new Scene(makeScene(board)));
 		stage.show();
 
 		return true;

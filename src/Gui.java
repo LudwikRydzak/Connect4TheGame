@@ -18,17 +18,17 @@ public class Gui extends Application {
 		// loader.setController(mc);
 		Parent menu = loader.load();
 
-		Scene menuScene = new Scene(menu, 500, 500);
+		Scene menuScene = new Scene(menu, 250, 280);
 		stage.setScene(menuScene);
 		stage.show();
 	}
 
-	public void pokaz(Stage stage) throws IOException {
+	public void display(Stage stage) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("menu.fxml"));
 		// loader.setController(mc);
 		Parent menu = loader.load();
 
-		Scene menuScene = new Scene(menu, 500, 500);
+		Scene menuScene = new Scene(menu, 250, 280);
 		stage.setScene(menuScene);
 		stage.show();
 	}

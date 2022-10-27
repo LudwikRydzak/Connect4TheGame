@@ -6,52 +6,52 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	public static void main(String[] args) {
-//		Plansza plansza = new Plansza(7, 6, 4);
-//		Wyswietlacz.wyswietlPlansze(plansza);
-		inicjacja(1);
+//		Plansza board = new Plansza(7, 6, 4);
+//		Wyswietlacz.wyswietlPlansze(board);
+		initialization(1);
 	}
 
-	public static boolean inicjacja(int konsola) {
-		Plansza plansza = null;
-		Zawodnik zawodnik1 = null;
-		Zawodnik zawodnik2 = null;
+	public static boolean initialization(int consoleInput) {
+		Board board = null;
+		Player player1 = null;
+		Player player2 = null;
 
-		if (konsola == 1) {
+		if (consoleInput == 1) {
 			Scanner scan = new Scanner(System.in);
 			System.out.println("Podaj liczbe kolumn");
-			int kolumny = scan.nextInt();
+			int columns = scan.nextInt();
 			System.out.println("Podaj liczbe wierszy");
-			int wiersze = scan.nextInt();
+			int rows = scan.nextInt();
 			System.out.println("connect N, podaj N");
 			int connectN = scan.nextInt();
-			plansza = new Plansza(kolumny, wiersze, connectN);
-			int opcja1;
+			board = new Board(columns, rows, connectN);
+			int option1;
 			do {
-				System.out.println("Zawodnik1: 1 Czlowiek, 2 Maszyna");
-				opcja1 = scan.nextInt();
-			} while (opcja1 != 1 && opcja1 != 2);
-			if (opcja1 == 1) {
+				System.out.println("Player1: 1 Hooman, 2 Computer Player");
+				option1 = scan.nextInt();
+			} while (option1 != 1 && option1 != 2);
+			if (option1 == 1) {
 
-				zawodnik1 = new Czlowiek(1);
+				player1 = new HumanPlayer(1);
 			} else {
-				System.out.println("Podaj poziom AI");
-				int poziom = scan.nextInt();
-				zawodnik1 = new Maszyna(1, poziom);
+				System.out.println("Podaj strength AI");
+				int level = scan.nextInt();
+				player1 = new ComputerPlayer(1, level);
 			}
 
-			int opcja2;
+			int option2;
 			do {
-				System.out.println("Zawodnik2: 1 Czlowiek, 2 Maszyna");
-				opcja2 = scan.nextInt();
-			} while (opcja2 != 1 && opcja2 != 2);
-			if (opcja2 == 1) {
-				zawodnik2 = new Czlowiek(2);
+				System.out.println("Player2: 1 Hooman, 2 Computer Player");
+				option2 = scan.nextInt();
+			} while (option2 != 1 && option2 != 2);
+			if (option2 == 1) {
+				player2 = new HumanPlayer(2);
 			} else {
-				System.out.println("Podaj poziom AI");
-				int poziom = scan.nextInt();
-				zawodnik2 = new Maszyna(2, poziom);
+				System.out.println("Set AI strength");
+				int level = scan.nextInt();
+				player2 = new ComputerPlayer(2, level);
 			}
-			rozgrywka(plansza, zawodnik1, zawodnik2, null);
+			Gameplay.gameplay(board, player1, player2, null);
 
 		} else {
 			launch();
@@ -61,59 +61,6 @@ public class Main extends Application {
 
 	}
 
-	public static boolean rozgrywka(Plansza plansza, Zawodnik zawodnik1, Zawodnik zawodnik2, Stage stage) {
-		for (int i = 0; i < (plansza.kolumny * plansza.wiersze + 1) / 2; i++) {
-
-///////////////////////////////////////////////////////////////////////////////////////////gracz1
-			Wyswietlacz.wyswietlPlansze(plansza);
-			if (stage != null) {
-				stage.show();
-			}
-			Ruch aktualnyRuch;
-			do {
-				aktualnyRuch = zawodnik1.wykonajRuchKonsola(plansza);
-				if (aktualnyRuch == null) {
-					System.out.println("Gracz1 nie mogl wykonac ruchu");
-					return false;
-				}
-
-			} while (!plansza.czyMoznaZagrac(aktualnyRuch.indeksKolumny));
-
-			if (plansza.zrobRuch(aktualnyRuch)) {
-				if (plansza.czyKoniec(aktualnyRuch)) {
-					System.out.println("Wygral gracz 1");
-					Wyswietlacz.wyswietlPlansze(plansza);
-					return true;
-				}
-			} else {
-				System.out.println("Nie mozna bylo wykonac ruchu");
-			}
-/////////////////////////////////////////////////////////////////////////////////////////gracz2
-			Wyswietlacz.wyswietlPlansze(plansza);
-			do {
-				aktualnyRuch = zawodnik2.wykonajRuchKonsola(plansza);
-				if (aktualnyRuch == null) {
-					System.out.println("Gracz2 nie mogl wykonac ruchu");
-					return false;
-				}
-			} while (!plansza.czyMoznaZagrac(aktualnyRuch.indeksKolumny));
-
-			if (plansza.zrobRuch(aktualnyRuch)) {
-				if (plansza.czyKoniec(aktualnyRuch)) {
-					System.out.println("Wygral gracz 2");
-					Wyswietlacz.wyswietlPlansze(plansza);
-					return true;
-				}
-			} else {
-				System.out.println("Nie mozna bylo wykonac ruchu");
-			}
-
-		}
-
-		System.out.println("Remis!!!");
-		Wyswietlacz.wyswietlPlansze(plansza);
-		return false;
-	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
