@@ -1,58 +1,73 @@
 import javafx.stage.Stage;
 
 public class Gameplay {
+    public static Board CURRENT_BOARD;
 
-    public static boolean gameplay(Board board, Player player1, Player player2, Stage stage) {
-        for (int i = 0; i < (board.columns * board.rows + 1) / 2; i++) {
+    Player player1;
+    Player player2;
+    Engine engine;
+    int connectN;
 
-///////////////////////////////////////////////////////////////////////////////////////////gracz1
-            Display.displayBoard(board);
-            if (stage != null) {
-                stage.show();
-            }
+    public Gameplay(Board board, Player player1, Player player2, Engine engine, int connectN){
+        CURRENT_BOARD = board;
+        this.player1 = player1;
+        this.player2 = player2;
+        this.engine = engine;
+        this.connectN = connectN;
+    }
+    private Player currentPlayer;
+
+
+    public boolean gameplay() {
+        int gameplayRounds = CURRENT_BOARD.columns * CURRENT_BOARD.rows;
+        for (int i = 0; i < gameplayRounds; i++) {
+
+            DisplayImpl.displayBoard(CURRENT_BOARD);
+
             Move currentMove;
-            do {
-                currentMove = player1.makeMove(board);
-                if (currentMove == null) {
-                    System.out.println("Gracz1 nie mogl wykonac ruchu");
-                    return false;
-                }
+            do{
+                currentMove = this.currentPlayer.makeMove();
 
-            } while (!board.ifMovePossible(currentMove.columnIndex));
+            } while (!this.engine.movePossible(currentMove));
 
-            if (board.makeMove(currentMove)) {
-                if (board.ifEnd(currentMove)) {
-                    System.out.println("Wygral gracz 1");
-                    Display.displayBoard(board);
-                    return true;
-                }
-            } else {
-                System.out.println("Nie mozna bylo wykonac ruchu");
-            }
-/////////////////////////////////////////////////////////////////////////////////////////gracz2
-            Display.displayBoard(board);
-            do {
-                currentMove = player2.makeMove(board);
-                if (currentMove == null) {
-                    System.out.println("Gracz2 nie mogl wykonac ruchu");
-                    return false;
-                }
-            } while (!board.ifMovePossible(currentMove.columnIndex));
+            engine.makeMove(currentMove);
 
-            if (board.makeMove(currentMove)) {
-                if (board.ifEnd(currentMove)) {
-                    System.out.println("Wygral gracz 2");
-                    Display.displayBoard(board);
-                    return true;
+            if (gameEnded()) {
+                DisplayImpl.displayBoard(CURRENT_BOARD);
+                return true;
                 }
-            } else {
-                System.out.println("Nie mozna bylo wykonac ruchu");
-            }
-
         }
 
-        System.out.println("Remis!!!");
-        Display.displayBoard(board);
+
+        DisplayImpl.displayBoard(CURRENT_BOARD);
         return false;
+    }
+
+    private boolean gameEnded() {
+        boolean ended = false;
+        switch (engine.gameEnded()) {
+            case 0:
+                ended = true;
+                break;
+            case 1:
+                ended = true;
+                break;
+            case 2:
+                ended = true;
+                break;
+            case -1:
+                ended = false;
+                break;
+            default:
+                ended = true;
+                System.out.print("Unexpected gameEnd value. Game ends now!");
+        }
+        return ended;
+    }
+
+
+    private Player nextPlayer(){
+        currentPlayer = currentPlayer == player1 ? player2 : player1;
+        return currentPlayer;
     }
 }

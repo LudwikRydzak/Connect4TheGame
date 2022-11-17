@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Gui extends Application {
+public class GuiController extends Application implements Display {
 
 	int wiersze, kolumny, connectN;
 
@@ -23,14 +23,8 @@ public class Gui extends Application {
 		stage.show();
 	}
 
-	public void display(Stage stage) throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("menu.fxml"));
-		// loader.setController(mc);
-		Parent menu = loader.load();
+	@Override
+	public void displayBoard(Board board) {
 
-		Scene menuScene = new Scene(menu, 250, 280);
-		stage.setScene(menuScene);
-		stage.show();
 	}
-
 }
