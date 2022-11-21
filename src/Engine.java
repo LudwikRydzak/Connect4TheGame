@@ -1,5 +1,5 @@
 public interface Engine {
-    public int gameEnded();
+    public String gameEnded();
     public boolean movePossible(Move move);
-    public Board makeMove(Move move);
+    public void makeMoveOnBoard(Move move, Board board);
 }

@@ -1,39 +1,62 @@
 public class EngineImpl implements Engine {
 
-    public int gameEnded() {
-//        return checkColumn(move) || checkRow(move) || checkDiagonal1(move)
-//                || checkDiagonal2(move);
+    int lastMoveColumn;
+    int lastMoveRow;
+    int lastMoveColour;
+    public String gameEnded() {
+        if( checkColumn() || checkRow() || checkDiagonal1()
+                || checkDiagonal2()){
+            return
+        }
+        else if(gameEndedWithDraw(Gameplay.getCurrentBoard())){
+            return "DRAW";
+        }
+        else{
+            return "NOTENDED";
+        }
+    }
+    private boolean gameEndedWithWin(){
+        return      checkColumn()
+                 || checkRow()
+                 || checkDiagonal1()
+                 || checkDiagonal2();
+    }
+    private boolean gameEndedWithDraw(Board board){
+        for (int i = 0; i< board.columns; i++) {
+            if(board.board[i][board.rows-1]== 0){
+                return false;
+            }
+        }
+        return true;
     }
     public boolean movePossible(Move move) {
-//        if (columnIndex < 0 || columnIndex >= columns) {
-//            return false;
-//        }
-//        if (board[columnIndex][rows - 1] == 0) {
-//            return true;
-//        } else {
-//            return false;
-//        }
+        Board board = Gameplay.getCurrentBoard();
+        if (move.chosenColumn < 0 || move.chosenColumn >= board.columns) {
+            return false;
+        }
+        if (board.board[move.chosenColumn][board.rows - 1] == 0) {
+            return true;
+        }
         return false;
     }
-    public Board makeMove(Move move) {
-//        for (int i = 0; i < this.rows; i++) {
-//            if (this.board[move.columnIndex][i] == 0) {
-//                this.board[move.columnIndex][i] = move.colour;
-//                move.rowIndex = i;
-//                return true;
-//            }
-//        }
-//        return false;
-        return null;
+    public void makeMoveOnBoard(Move move, Board CURRENT_BOARD) {
+        for (int i = 0; i < CURRENT_BOARD.rows; i++) {
+            if (CURRENT_BOARD.board[move.chosenColumn][i] == 0) {
+                CURRENT_BOARD.board[move.chosenColumn][i] = move.colour;
+                move.row = i;
+                break;
+            }
+        }
     }
 
 
-    private boolean checkColumn(Move move) {
+    private boolean checkColumnForColor(int column, int colour) {
+        Board board = Gameplay.getCurrentBoard();
         int counter = 0;
-        for (int i = 0; i < this.rows; i++) {
-            if (this.board[move.columnIndex][i] == move.colour) {
+        for (int i = 0; i < board.rows; i++) {
+            if (board.board[column][i] == colour) {
                 counter++;
-                if (counter == connectN) {
+                if (counter == Gameplay.getConnectN()) {
                     return true;
                 }
             } else {
@@ -43,12 +66,13 @@ public class EngineImpl implements Engine {
         return false;
     }
 
-    private boolean checkRow(Move move) {
+    private boolean checkRowForColour(int row, int colour) {
+        Board board = Gameplay.getCurrentBoard();
         int counter = 0;
-        for (int i = 0; i < this.columns; i++) {
-            if (this.board[i][move.rowIndex] == move.colour) {
+        for (int i = 0; i < board.columns; i++) {
+            if (board.board[i][row] == colour) {
                 counter++;
-                if (counter == connectN) {
+                if (counter == Gameplay.getConnectN()) {
                     return true;
                 }
             } else {
@@ -58,13 +82,14 @@ public class EngineImpl implements Engine {
         return false;
     }
 
-    private boolean checkDiagonal1(Move move) {
+    private int checkDiagonal1ForColour() {
+        Board board = Gameplay.getCurrentBoard();
         int counter = 0;
-        for (int i = 0; i <= move.columnIndex + move.rowIndex; i++) {
-            if (i < this.columns && move.columnIndex + move.rowIndex - i < this.rows) {
-                if (this.board[i][move.columnIndex + move.rowIndex - i] == move.colour) {
+        for (int i = 0; i <= move.chosenColumn + move.row; i++) {
+            if (i < board.columns && move.chosenColumn + move.row - i < board.rows) {
+                if (board.board[i][move.chosenColumn + move.row - i] == move.colour) {
                     counter++;
-                    if (counter == connectN) {
+                    if (counter == Gameplay.getConnectN()) {
                         return true;
                     }
                 } else {
@@ -75,14 +100,16 @@ public class EngineImpl implements Engine {
         return false;
     }
 
-    private boolean checkDiagonal2(Move move) {
+    private int checkDiagonal2ForColour() {
+        Board board = Gameplay.getCurrentBoard();
         int counter = 0;
-        for (int i = 0; i < this.rows; i++) {
-            if (move.columnIndex - move.rowIndex + i < this.columns
-                    && move.columnIndex - move.rowIndex + i >= 0) {
-                if (this.board[move.columnIndex - move.rowIndex + i][i] == move.colour) {
+        for (int i = 0; i < board.rows; i++) {
+            int referenceColumn = move.chosenColumn - move.row + i;
+            if (referenceColumn < board.columns
+                    && referenceColumn >= 0) {
+                if (board.board[referenceColumn][i] == move.colour) {
                     counter++;
-                    if (counter == connectN) {
+                    if (counter == Gameplay.getConnectN()) {
                         return true;
                     }
                 } else {

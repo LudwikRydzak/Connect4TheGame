@@ -1,66 +1,80 @@
 import javafx.stage.Stage;
 
 public class Gameplay {
-    public static Board CURRENT_BOARD;
-
+    private static Board CURRENT_BOARD;
+    private static int CONNECTN;
     Player player1;
     Player player2;
     Engine engine;
-    int connectN;
-
-    public Gameplay(Board board, Player player1, Player player2, Engine engine, int connectN){
+    Display display;
+    private Player currentPlayer;
+    private String gameResult;
+    public Gameplay(Board board, Player player1, Player player2, Engine engine, Display display,int connectN) {
         CURRENT_BOARD = board;
+        CONNECTN = connectN;
+
         this.player1 = player1;
         this.player2 = player2;
         this.engine = engine;
-        this.connectN = connectN;
+        this.display = display;
+
+        this.currentPlayer = player1;
     }
-    private Player currentPlayer;
-
-
+    public static Board getCurrentBoard(){
+        return CURRENT_BOARD;
+    }
+    public static int getConnectN(){
+        return CONNECTN;
+    }
     public boolean gameplay() {
         int gameplayRounds = CURRENT_BOARD.columns * CURRENT_BOARD.rows;
         for (int i = 0; i < gameplayRounds; i++) {
 
-            DisplayImpl.displayBoard(CURRENT_BOARD);
-
-            Move currentMove;
-            do{
-                currentMove = this.currentPlayer.makeMove();
-
-            } while (!this.engine.movePossible(currentMove));
-
-            engine.makeMove(currentMove);
+            this.display.displayBoard(CURRENT_BOARD);
 
             if (gameEnded()) {
-                DisplayImpl.displayBoard(CURRENT_BOARD);
                 return true;
-                }
+            }
+
+            Move currentMove = currentPlayerMakeMove();
+            engine.makeMoveOnBoard(currentMove, CURRENT_BOARD);
+
+            nextPlayer();
         }
+        this.display.displayBoard(CURRENT_BOARD);
 
+        return gameEnded(); //if at this moment gameEnded() returns false, something went wrong
 
-        DisplayImpl.displayBoard(CURRENT_BOARD);
-        return false;
+    }
+    private Move currentPlayerMakeMove()
+    {
+        Move currentMove;
+            do{
+                currentMove = this.currentPlayer.makeMove();
+            } while (!this.engine.movePossible(currentMove));
+
+        return currentMove;
     }
 
     private boolean gameEnded() {
-        boolean ended = false;
-        switch (engine.gameEnded()) {
-            case 0:
+        boolean ended;
+        this.gameResult = engine.gameEnded();
+        switch (this.gameResult) {
+            case "DRAW":
                 ended = true;
                 break;
-            case 1:
+            case "PLAYER1WIN":
                 ended = true;
                 break;
-            case 2:
+            case "PLAYER2WIN":
                 ended = true;
                 break;
-            case -1:
+            case "NOTENDED":
                 ended = false;
                 break;
             default:
                 ended = true;
-                System.out.print("Unexpected gameEnd value. Game ends now!");
+                System.out.print("Unexpected end of the game value. Game ends now!");
         }
         return ended;
     }

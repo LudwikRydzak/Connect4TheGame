@@ -1,7 +1,10 @@
 
 public class Move {
 	public int chosenColumn;
-	Move(int chosenColumn){
+	public int row;
+	public int colour;
+	Move(int chosenColumn, int colour){
 		this.chosenColumn = chosenColumn;
+		this.colour = colour;
 	}
 }
