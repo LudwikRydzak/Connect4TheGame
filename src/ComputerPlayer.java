@@ -11,7 +11,8 @@ public class ComputerPlayer extends Player {
 	}
 
 	@Override
-	public Move makeMove(Board board) {
+	public Move makeMove() {
+		Board board = Gameplay.getCurrentBoard();
 		ArrayList<Move> bestMoves = new ArrayList<Move>();
 		int bestMoveValue = Integer.MIN_VALUE;
 		if (colour == 2) {
@@ -19,7 +20,7 @@ public class ComputerPlayer extends Player {
 		}
 		int moveValue;
 		for (int i = 0; i < board.columns; i++) {
-			if (board.ifMovePossible(i)) {
+			if (Engine.movePossible(i)) {
 				Move move = new Move(i, this.colour);
 				Board newBoard = new Board(board);
 				newBoard.makeMove(move);

@@ -9,14 +9,14 @@ public class Gameplay {
     Display display;
     private Player currentPlayer;
     private String gameResult;
-    public Gameplay(Board board, Player player1, Player player2, Engine engine, Display display,int connectN) {
-        CURRENT_BOARD = board;
-        CONNECTN = connectN;
+    public Gameplay(GameplaySettings settings) {
+        CURRENT_BOARD = settings.board;
+        CONNECTN = settings.connectN;
 
-        this.player1 = player1;
-        this.player2 = player2;
-        this.engine = engine;
-        this.display = display;
+        this.player1 = settings.player1;
+        this.player2 = settings.player2;
+        this.engine = settings.engine;
+        this.display = settings.display;
 
         this.currentPlayer = player1;
     }

@@ -1,3 +1,3 @@
-public interface Display {
-    public void displayBoard(Board board);
+public interface Display extends Runnable {
+    public void displayBoard(Board board) throws InterruptedException;
 }

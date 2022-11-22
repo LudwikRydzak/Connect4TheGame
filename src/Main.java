@@ -7,9 +7,7 @@ public class Main extends Application {
 
 	/// Menu
 	public static void main(String[] args) {
-//		Gameplay game = loadGameSettings();
-//		this.playGame(game);
-
+		Gameplay game = new Gameplay();
 	}
 	private static Gameplay loadGameSettings(){
 
