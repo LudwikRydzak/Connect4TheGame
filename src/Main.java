@@ -7,9 +7,10 @@ public class Main extends Application {
 
 	/// Menu
 	public static void main(String[] args) {
-		Gameplay game = new Gameplay();
+		loadGameSettings();
+//		Gameplay game = new Gameplay();
 	}
-	private static Gameplay loadGameSettings(){
+	private static GameplaySettings loadGameSettings(){
 
 		return null;
 	}

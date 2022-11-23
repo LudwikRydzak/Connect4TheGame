@@ -2,7 +2,8 @@ import java.util.Scanner;
 
 public class HumanPlayer extends Player {
 
-	public HumanPlayer() {
+	public HumanPlayer(int colour) {
+		this.colour = colour;
 	}
 
 	public Move makeMove() {

@@ -26,7 +26,7 @@ public class Gameplay {
     public static int getConnectN(){
         return CONNECTN;
     }
-    public boolean gameplay() {
+    public boolean gameplay() throws InterruptedException {
         int gameplayRounds = CURRENT_BOARD.columns * CURRENT_BOARD.rows;
         for (int i = 0; i < gameplayRounds; i++) {
 
@@ -51,7 +51,7 @@ public class Gameplay {
         Move currentMove;
             do{
                 currentMove = this.currentPlayer.makeMove();
-            } while (!this.engine.movePossible(currentMove));
+            } while (!this.engine.movePossible(currentMove.chosenColumn));
 
         return currentMove;
     }

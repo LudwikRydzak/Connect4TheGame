@@ -25,6 +25,7 @@ public class MenuController {
 	Player currentPlayer = player1;
 	Stage stage;
 	int liczbaRund;
+	int connectN;
 	@FXML
 	TextField kolumnyTextField;
 
@@ -87,7 +88,10 @@ public class MenuController {
 
 	public void onAction(ActionEvent event) {
 		board = new Board(Integer.parseInt(kolumnyTextField.getText()),
-				Integer.parseInt(wierszeTextField.getText()), Integer.parseInt(connectNTextField.getText()));
+				Integer.parseInt(wierszeTextField.getText()));
+
+		connectN = Integer.parseInt(connectNTextField.getText());
+
 		if (!gracz1ZawodnikButton.isSelected()) {
 			player1 = new HumanPlayer(1);
 		} else {
@@ -98,26 +102,12 @@ public class MenuController {
 		if (!gracz2ZawodnikButton.isSelected()) {
 			player2 = new HumanPlayer(2);
 		} else {
-			int poziom = Integer.parseInt(gracz1TextField.getText());
+			int poziom = Integer.parseInt(gracz2TextField.getText());
 			player2 = new ComputerPlayer(2, poziom);
 		}
-		liczbaRund = board.columns * board.rows;
-		currentPlayer = player1;
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-		if (currentPlayer.ifHumanPlayer) {
-			gameplayHuman();
-		} else {
-			gameplayAI();
-		}
 
-	}
-
-	public boolean gameplayHuman() {
-		stage.setScene(new Scene(makeScene(board)));
-		stage.show();
-
-		return true;
 	}
 
 }

@@ -27,20 +27,20 @@ public class EngineImpl implements Engine {
         }
         return true;
     }
-    public boolean movePossible(Move move) {
+    public  boolean movePossible(int chosenColumn) {
         Board board = Gameplay.getCurrentBoard();
-        if (move.chosenColumn < 0 || move.chosenColumn >= board.columns) {
+        if (chosenColumn < 0 || chosenColumn >= board.columns) {
             return false;
         }
-        if (board.board[move.chosenColumn][board.rows - 1] == 0) {
+        if (board.board[chosenColumn][board.rows - 1] == 0) {
             return true;
         }
         return false;
     }
-    public void makeMoveOnBoard(Move move, Board CURRENT_BOARD) {
-        for (int i = 0; i < CURRENT_BOARD.rows; i++) {
-            if (CURRENT_BOARD.board[move.chosenColumn][i] == 0) {
-                CURRENT_BOARD.board[move.chosenColumn][i] = move.colour;
+    public void makeMoveOnBoard(Move move, Board board) {
+        for (int i = 0; i < board.rows; i++) {
+            if (board.board[move.chosenColumn][i] == 0) {
+                board.board[move.chosenColumn][i] = move.colour;
 
                 this.lastMoveColour = move.colour;
                 this.lastMoveColumn = move.chosenColumn;
